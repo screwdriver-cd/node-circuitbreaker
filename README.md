@@ -1,7 +1,7 @@
 [node-circuitbreaker][3]
 ======================
 
-[![Version][npm-image]][npm-url] ![Downloads][downloads-image] [![Build Status][status-image]][status-url] [![Open Issues][issues-image]][issues-url] [![Dependency Status][daviddm-image]][daviddm-url] ![License][license-image]
+[![Version][npm-image]][npm-url] ![Downloads][downloads-image] [![Build Status][status-image]][status-url] [![Open Issues][issues-image]][issues-url] ![License][license-image]
 
 Circuit breaker is a [node.js][2] implementation of the [Circuit Breaker][1] pattern.
 When properly configured it can aid in providing stability and prevent
@@ -94,5 +94,3 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [issues-url]: https://github.com/screwdriver-cd/node-circuitbreaker/issues
 [status-image]: https://cd.screwdriver.cd/pipelines/334/badge
 [status-url]: https://cd.screwdriver.cd/pipelines/334
-[daviddm-image]: https://david-dm.org/screwdriver-cd/node-circuitbreaker.svg?theme=shields.io
-[daviddm-url]: https://david-dm.org/screwdriver-cd/node-circuitbreaker

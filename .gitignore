@@ -7,3 +7,5 @@ node_modules
 artifacts/
 .DS_STORE
 .*.swp
+.nyc_output
+package-lock.json

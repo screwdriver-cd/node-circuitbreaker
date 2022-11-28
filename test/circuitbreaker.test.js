@@ -1,8 +1,8 @@
 'use strict';
 
-const CircuitBreaker = require('../lib/circuit-breaker');
-const assert = require('chai').assert;
+const { assert } = require('chai');
 const sinon = require('sinon');
+const CircuitBreaker = require('../lib/circuit-breaker');
 
 // chai.should();
 
@@ -39,7 +39,7 @@ describe('Circuit Breaker', () => {
             assert.isFalse(breaker.isClosed());
         });
 
-        it('should enter half-open state after reset timeout', (done) => {
+        it('should enter half-open state after reset timeout', done => {
             const breaker = new CircuitBreaker(callback, { resetTimeout: 10 });
 
             breaker.forceOpen();
@@ -53,7 +53,7 @@ describe('Circuit Breaker', () => {
             }, 11);
         });
 
-        it('should remain in open state till reset timeout has been reached', (done) => {
+        it('should remain in open state till reset timeout has been reached', done => {
             const breaker = new CircuitBreaker(callback, { resetTimeout: 20 });
 
             breaker.forceOpen();
@@ -67,7 +67,7 @@ describe('Circuit Breaker', () => {
             }, 19);
         });
 
-        it('should emit open event', (done) => {
+        it('should emit open event', done => {
             const breaker = new CircuitBreaker(callback);
 
             breaker.on('open', () => {
@@ -102,7 +102,7 @@ describe('Circuit Breaker', () => {
             breaker.numFailures.should.equal(0);
         });
 
-        it('should emit close event', (done) => {
+        it('should emit close event', done => {
             const breaker = new CircuitBreaker(callback);
 
             breaker.on('close', () => {
@@ -125,7 +125,7 @@ describe('Circuit Breaker', () => {
             assert.isTrue(breaker.isHalfOpen());
         });
 
-        it('should emit halfOpen event', (done) => {
+        it('should emit halfOpen event', done => {
             const breaker = new CircuitBreaker(callback);
 
             breaker.on('halfOpen', () => {
@@ -167,7 +167,7 @@ describe('Circuit Breaker', () => {
             assert.isFalse(breaker.isClosed());
         });
 
-        it('should emit failure event', (done) => {
+        it('should emit failure event', done => {
             const breaker = new CircuitBreaker(callback);
 
             breaker.on('failure', () => done());
@@ -197,7 +197,7 @@ describe('Circuit Breaker', () => {
             assert.isTrue(breaker.isClosed());
         });
 
-        it('should emit success event', (done) => {
+        it('should emit success event', done => {
             const breaker = new CircuitBreaker(callback);
 
             breaker.on('success', () => done());
@@ -207,25 +207,28 @@ describe('Circuit Breaker', () => {
     });
 
     describe('invoke', () => {
-        it('should remain closed on successful call', (done) => {
+        it('should remain closed on successful call', done => {
             const breaker = new CircuitBreaker(callback);
 
             callback.withArgs('pass').yields(null, 'pass');
 
-            breaker.invoke('pass').then((msg) => {
-                msg.should.equal('pass');
-                assert.isTrue(breaker.isClosed());
+            breaker
+                .invoke('pass')
+                .then(msg => {
+                    msg.should.equal('pass');
+                    assert.isTrue(breaker.isClosed());
 
-                return done();
-            }).fail(err => done(err));
+                    return done();
+                })
+                .fail(err => done(err));
         });
 
-        it('should enter open state after 3 failures', (done) => {
+        it('should enter open state after 3 failures', done => {
             const breaker = new CircuitBreaker(callback, { maxFailures: 3 });
 
             callback.yields(new Error('fail'));
 
-            const noop = function () { };
+            const noop = function () {};
 
             breaker.invoke('fail').fail(noop);
             breaker.invoke('fail').fail(noop);
@@ -238,13 +241,13 @@ describe('Circuit Breaker', () => {
             });
         });
 
-        it('should fail fast when in open state', (done) => {
+        it('should fail fast when in open state', done => {
             const breaker = new CircuitBreaker(callback);
 
             callback.yields(null, 'pass');
             breaker.forceOpen();
 
-            breaker.invoke('pass').fail((err) => {
+            breaker.invoke('pass').fail(err => {
                 assert.isFalse(callback.called);
                 'Error: CircuitBreaker open'.should.equal(err.toString());
 
@@ -252,7 +255,7 @@ describe('Circuit Breaker', () => {
             });
         });
 
-        it('should emit rejected event when fast failing', (done) => {
+        it('should emit rejected event when fast failing', done => {
             const breaker = new CircuitBreaker(callback);
 
             callback.yields(null, 'pass');
@@ -260,21 +263,21 @@ describe('Circuit Breaker', () => {
 
             breaker.on('rejected', () => done());
 
-            breaker.invoke('pass').fail(() => { });
+            breaker.invoke('pass').fail(() => {});
         });
 
-        it('should invoke function once and then fail fast when in half-open state', (done) => {
+        it('should invoke function once and then fail fast when in half-open state', done => {
             const breaker = new CircuitBreaker(callback);
 
             callback.yieldsAsync(null, 'pass');
             breaker.forceHalfOpen();
 
-            breaker.invoke('pass').then((msg) => {
+            breaker.invoke('pass').then(msg => {
                 msg.should.equal('pass');
                 assert.isTrue(callback.calledOnce);
             });
 
-            breaker.invoke('short').fail((err) => {
+            breaker.invoke('short').fail(err => {
                 assert.isTrue(callback.calledOnce);
 
                 'Error: CircuitBreaker open'.should.equal(err.toString());
@@ -283,7 +286,7 @@ describe('Circuit Breaker', () => {
             });
         });
 
-        it('should emit request event', (done) => {
+        it('should emit request event', done => {
             const breaker = new CircuitBreaker(callback);
 
             callback.yieldsAsync(null, 'pass');
@@ -293,7 +296,7 @@ describe('Circuit Breaker', () => {
             breaker.invoke('pass');
         });
 
-        it('should latency event on successful call', (done) => {
+        it('should latency event on successful call', done => {
             const clock = sinon.useFakeTimers();
 
             const timeout = function (cb) {
@@ -302,7 +305,7 @@ describe('Circuit Breaker', () => {
 
             const breaker = new CircuitBreaker(timeout);
 
-            breaker.on('latency', (latency) => {
+            breaker.on('latency', latency => {
                 latency.should.equal(20);
 
                 return done();
@@ -317,7 +320,7 @@ describe('Circuit Breaker', () => {
     });
 
     describe('timeout', () => {
-        it('should enter open state after timing out', (done) => {
+        it('should enter open state after timing out', done => {
             const timeout = function (cb) {
                 setTimeout(cb, 20);
             };
@@ -327,7 +330,7 @@ describe('Circuit Breaker', () => {
                 maxFailures: 3,
                 resetTimeout: 3000
             });
-            const noop = function () { };
+            const noop = function () {};
 
             breaker.invoke().fail(noop);
             breaker.invoke().fail(noop);
@@ -339,7 +342,7 @@ describe('Circuit Breaker', () => {
             }, 25);
         });
 
-        it('should clear timeout if returned before timeout period', (done) => {
+        it('should clear timeout if returned before timeout period', done => {
             const breaker = new CircuitBreaker(callback, { timeout: 10, maxFailures: 3 });
 
             callback.yieldsAsync(null, 'pass');
@@ -354,7 +357,7 @@ describe('Circuit Breaker', () => {
             }, 20);
         });
 
-        it('should emit timeout event after timing out', (done) => {
+        it('should emit timeout event after timing out', done => {
             const timeout = function (cb) {
                 setTimeout(cb, 20);
             };
@@ -363,10 +366,10 @@ describe('Circuit Breaker', () => {
 
             breaker.on('timeout', () => done());
 
-            breaker.invoke().fail(() => { });
+            breaker.invoke().fail(() => {});
         });
 
-        it('should take timeout value from env variable', (done) => {
+        it('should take timeout value from env variable', done => {
             const timeout = function (cb) {
                 setTimeout(cb, 20);
             };
@@ -378,12 +381,12 @@ describe('Circuit Breaker', () => {
 
             breaker.on('timeout', () => done());
 
-            breaker.invoke().fail(() => { });
+            breaker.invoke().fail(() => {});
         });
     });
 
     describe('errorFn', () => {
-        it('should break based on error function parameter', (done) => {
+        it('should break based on error function parameter', done => {
             const breakerFn = function (id, cb) {
                 if (id < 0) {
                     return cb(id);
@@ -404,7 +407,7 @@ describe('Circuit Breaker', () => {
                     return true;
                 }
             });
-            const noop = function () { };
+            const noop = function () {};
 
             breaker.invoke(-1).fail(noop);
             breaker.invoke(-2).fail(noop);
@@ -417,7 +420,7 @@ describe('Circuit Breaker', () => {
             done();
         });
 
-        it('should break the circuit normally without an error function', (done) => {
+        it('should break the circuit normally without an error function', done => {
             const breakerFn = function (id, cb) {
                 if (id < 0) {
                     return cb(id);
@@ -431,7 +434,7 @@ describe('Circuit Breaker', () => {
                 maxFailures: 3,
                 resetTimeout: 30
             });
-            const noop = function () { };
+            const noop = function () {};
 
             breaker.invoke(-1).fail(noop);
             breaker.invoke(-2).fail(noop);

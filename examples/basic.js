@@ -22,12 +22,12 @@ breaker(-1).fail(console.log);
 breaker(-1).fail(console.log);
 breaker(-1).fail(console.log);
 
-breaker(32).fail((err) => {
+breaker(32).fail(err => {
     console.log('failed because breaker is open', err);
 });
 
 setTimeout(() => {
-    breaker(32).then((data) => {
+    breaker(32).then(data => {
         console.log('loaded data because circuit reset after timeout: ', data);
     });
 }, 35);

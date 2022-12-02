@@ -1,10 +1,10 @@
 'use strict';
 
-const circuitBreaker = require('../index');
 const chai = require('chai');
 const events = require('events');
-const Stats = require('../lib/stats');
 const sinon = require('sinon');
+const Stats = require('../lib/stats');
+const circuitBreaker = require('../index');
 
 chai.should();
 
@@ -50,7 +50,7 @@ describe('Index', () => {
             const eventEmitterMethods = Object.keys(events.EventEmitter.prototype);
             const breaker = circuitBreaker(callback);
 
-            eventEmitterMethods.forEach((method) => {
+            eventEmitterMethods.forEach(method => {
                 breaker[method].should.be.instanceof(Function);
             });
         });
@@ -63,7 +63,7 @@ describe('Index', () => {
     });
 
     describe('Functional tests', () => {
-        it('should succeed', (done) => {
+        it('should succeed', done => {
             const breaker = circuitBreaker(callback);
 
             callback.yieldsAsync(null, 'pass');
@@ -71,7 +71,7 @@ describe('Index', () => {
             breaker('pass').then(() => done());
         });
 
-        it('should fail', (done) => {
+        it('should fail', done => {
             const breaker = circuitBreaker(callback);
 
             callback.yieldsAsync(new Error('fail'));

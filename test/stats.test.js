@@ -1,8 +1,8 @@
 'use strict';
 
-const Stats = require('../lib/stats');
 const chai = require('chai');
 const events = require('events');
+const Stats = require('../lib/stats');
 
 chai.should();
 
@@ -15,7 +15,7 @@ describe('Stats', () => {
         stats = new Stats(mockBreaker);
     });
 
-    it('should track total number of timeouts', (done) => {
+    it('should track total number of timeouts', done => {
         mockBreaker.once('timeout', () => {
             stats.timeouts.should.equal(1);
             done();
@@ -24,7 +24,7 @@ describe('Stats', () => {
         mockBreaker.emit('timeout');
     });
 
-    it('should track total number of successful responses', (done) => {
+    it('should track total number of successful responses', done => {
         mockBreaker.once('success', () => {
             stats.successfulResponses.should.equal(1);
             done();
@@ -33,7 +33,7 @@ describe('Stats', () => {
         mockBreaker.emit('success');
     });
 
-    it('should track total number of failed responses', (done) => {
+    it('should track total number of failed responses', done => {
         mockBreaker.once('failure', () => {
             stats.failedResponses.should.equal(1);
             done();
@@ -42,7 +42,7 @@ describe('Stats', () => {
         mockBreaker.emit('failure');
     });
 
-    it('should track total number of rejected requests', (done) => {
+    it('should track total number of rejected requests', done => {
         mockBreaker.once('rejected', () => {
             stats.rejectedRequests.should.equal(1);
             done();
@@ -51,7 +51,7 @@ describe('Stats', () => {
         mockBreaker.emit('rejected');
     });
 
-    it('should track total number of requests', (done) => {
+    it('should track total number of requests', done => {
         mockBreaker.once('request', () => {
             stats.totalRequests.should.equal(1);
             done();
@@ -60,7 +60,7 @@ describe('Stats', () => {
         mockBreaker.emit('request');
     });
 
-    it('should track total response time', (done) => {
+    it('should track total response time', done => {
         mockBreaker.emit('latency', 45);
 
         mockBreaker.once('latency', () => {
@@ -71,7 +71,7 @@ describe('Stats', () => {
         mockBreaker.emit('latency', 55);
     });
 
-    it('should calculate average response time', (done) => {
+    it('should calculate average response time', done => {
         mockBreaker.emit('success');
         mockBreaker.emit('latency', 30);
 
@@ -88,7 +88,7 @@ describe('Stats', () => {
         mockBreaker.emit('latency', 50);
     });
 
-    it('should calculate concurrent requests', (done) => {
+    it('should calculate concurrent requests', done => {
         mockBreaker.emit('request');
         mockBreaker.emit('success');
 
@@ -105,7 +105,7 @@ describe('Stats', () => {
         mockBreaker.emit('request');
     });
 
-    it('should calculate concurrent requests when requests get rejected', (done) => {
+    it('should calculate concurrent requests when requests get rejected', done => {
         mockBreaker.emit('request');
         mockBreaker.emit('success');
 
@@ -124,7 +124,7 @@ describe('Stats', () => {
     });
 
     describe('#reset', () => {
-        it('should reset timesout to 0', (done) => {
+        it('should reset timesout to 0', done => {
             mockBreaker.emit('timeout');
             mockBreaker.emit('timeout');
 
@@ -140,7 +140,7 @@ describe('Stats', () => {
             mockBreaker.emit('timeout');
         });
 
-        it('should reset total requests to 0', (done) => {
+        it('should reset total requests to 0', done => {
             mockBreaker.emit('request');
 
             mockBreaker.once('request', () => {
@@ -155,7 +155,7 @@ describe('Stats', () => {
             mockBreaker.emit('request');
         });
 
-        it('should reset all attributes to 0', (done) => {
+        it('should reset all attributes to 0', done => {
             mockBreaker.emit('request');
             mockBreaker.emit('failure');
             mockBreaker.emit('latency', 30);

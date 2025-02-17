@@ -1,6 +1,6 @@
 {
   "name": "screwdriver-node-circuitbreaker",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Circuit breaker that is used to provide stability and prevent cascading failures in distributed systems",
   "main": "index.js",
   "scripts": {
@@ -39,11 +39,11 @@
   },
   "license": "MIT",
   "dependencies": {
-    "q": "^1.5.0"
+    "q": "^1.5.1"
   },
   "devDependencies": {
-    "eslint": "^8.28.0",
-    "eslint-config-screwdriver": "^7.0.0",
+    "eslint": "^8.57.0",
+    "eslint-config-screwdriver": "^8.0.0",
     "chai": "^4.3.7",
     "sinon": "^15.0.0",
     "mocha": "^10.1.0",
